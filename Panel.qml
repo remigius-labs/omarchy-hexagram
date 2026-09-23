@@ -78,6 +78,8 @@ Panel {
           spacing: Style.space(2)
 
           Text {
+            width: parent.width
+            horizontalAlignment: Text.AlignHCenter
             text: root.reading ? root.reading.hexagram.name : "Casting…"
             color: root.bar.foreground
             font.family: root.bar.fontFamily
@@ -85,6 +87,8 @@ Panel {
             font.bold: true
           }
           Text {
+            width: parent.width
+            horizontalAlignment: Text.AlignHCenter
             text: root.reading
               ? (root.reading.hexagram.number + " · " + root.reading.hexagram.pinyin).toUpperCase()
               : ""
@@ -134,6 +138,7 @@ Panel {
         // ---------- What it means ----------
         Text {
           width: parent.width
+          horizontalAlignment: Text.AlignHCenter
           text: root.reading ? root.reading.hexagram.meaning : ""
           color: root.bar.foreground
           opacity: 0.85
@@ -157,6 +162,7 @@ Panel {
           }
           Text {
             width: parent.width
+            horizontalAlignment: Text.AlignHCenter
             text: root.reading ? root.reading.seed : ""
             color: root.bar.foreground
             opacity: 0.6
@@ -166,6 +172,7 @@ Panel {
           }
           Text {
             width: parent.width
+            horizontalAlignment: Text.AlignHCenter
             text: "od -An -tx1 -N32 /dev/urandom"
             color: root.bar.foreground
             opacity: 0.35
