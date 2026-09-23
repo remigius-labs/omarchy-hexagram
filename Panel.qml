@@ -72,7 +72,7 @@ Panel {
         anchors.top: parent.top
         spacing: Style.space(12)
 
-        // ---------- Name · number/pinyin/trigrams ----------
+        // ---------- Name · number/pinyin ----------
         Column {
           width: parent.width
           spacing: Style.space(2)
@@ -86,8 +86,7 @@ Panel {
           }
           Text {
             text: root.reading
-              ? (root.reading.hexagram.number + " · " + root.reading.hexagram.pinyin + " · "
-                 + root.reading.hexagram.upper + " over " + root.reading.hexagram.lower).toUpperCase()
+              ? (root.reading.hexagram.number + " · " + root.reading.hexagram.pinyin).toUpperCase()
               : ""
             color: Qt.darker(root.bar.foreground, 1.4)
             font.family: root.bar.fontFamily

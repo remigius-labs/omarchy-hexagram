@@ -20,7 +20,6 @@ var castScript =
 // Trigrams as three bits, bottom line first. Q Qian ☰ K Kun ☷ Z Zhen ☳
 // N Kan ☵ G Gen ☶ X Xun ☴ L Li ☲ D Dui ☱
 var trigramBits = { Q: "111", K: "000", Z: "100", N: "010", G: "001", X: "011", L: "101", D: "110" }
-var trigramGlyph = { Q: "☰", K: "☷", Z: "☳", N: "☵", G: "☶", X: "☴", L: "☲", D: "☱" }
 
 // King Wen sequence 1..64 as lower+upper trigram.
 var kingWen = (
@@ -152,15 +151,12 @@ function bitsOf(lines) {
 }
 
 function describe(n) {
-  var kw = kingWen[n - 1]
   return {
     number: n,
     glyph: String.fromCharCode(0x4DC0 + n - 1),
     name: names[n - 1],
     pinyin: pinyin[n - 1],
-    meaning: meanings[n - 1],
-    lower: trigramGlyph[kw[0]],
-    upper: trigramGlyph[kw[1]]
+    meaning: meanings[n - 1]
   }
 }
 
