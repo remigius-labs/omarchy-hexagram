@@ -28,14 +28,6 @@ Panel {
     if (next) reading = next
   }
 
-  function lineGlyph(v) {
-    // 6 old yin, 7 young yang, 8 young yin, 9 old yang
-    if (v === 6) return "▬ ▬ ○"
-    if (v === 7) return "▬▬▬"
-    if (v === 8) return "▬ ▬"
-    return "▬▬▬ ●"
-  }
-
   Component.onCompleted: refresh()
 
   Process {
@@ -117,19 +109,51 @@ Panel {
           }
         }
 
-        // ---------- Lines, top to bottom ----------
+        // ---------- Lines, top to bottom, drawn full width ----------
         Column {
           width: parent.width
-          spacing: Style.space(2)
+          spacing: Style.space(6)
           Repeater {
             model: root.reading ? [5, 4, 3, 2, 1, 0] : []
-            Text {
+            Item {
+              id: lineRow
               required property int modelData
-              text: root.lineGlyph(root.reading.lines[modelData])
-              color: root.bar.foreground
-              opacity: (root.reading.lines[modelData] === 6 || root.reading.lines[modelData] === 9) ? 1 : 0.55
-              font.family: root.bar.fontFamily
-              font.pixelSize: Style.font.bodySmall
+              readonly property int value: root.reading.lines[modelData]
+              readonly property bool yang: value === 7 || value === 9
+              readonly property bool changing: value === 6 || value === 9
+              width: parent.width
+              height: Style.space(10)
+              opacity: changing ? 1 : 0.55
+
+              // Yang: one bar. Yin: two bars with a gap of one sixth.
+              Rectangle {
+                anchors.left: parent.left
+                anchors.verticalCenter: parent.verticalCenter
+                height: parent.height
+                width: lineRow.yang ? parent.width : parent.width * 5 / 12
+                radius: height / 3
+                color: root.bar.foreground
+              }
+              Rectangle {
+                visible: !lineRow.yang
+                anchors.right: parent.right
+                anchors.verticalCenter: parent.verticalCenter
+                height: parent.height
+                width: parent.width * 5 / 12
+                radius: height / 3
+                color: root.bar.foreground
+              }
+              // Changing marker, the classic circle in the middle of the line.
+              Rectangle {
+                visible: lineRow.changing
+                anchors.centerIn: parent
+                width: parent.height * 1.6
+                height: width
+                radius: width / 2
+                color: Color.popups.background
+                border.width: 2
+                border.color: root.bar.foreground
+              }
             }
           }
         }
