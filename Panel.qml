@@ -56,7 +56,7 @@ Panel {
     bar: root.bar
     open: root.opened
     focusTarget: keyCatcher
-    contentWidth: panel.fittedContentWidth(Style.space(300))
+    contentWidth: panel.fittedContentWidth(Style.space(360))
     contentHeight: panel.fittedContentHeight(column.implicitHeight)
 
     PanelKeyCatcher {
@@ -139,7 +139,8 @@ Panel {
         Text {
           width: parent.width
           horizontalAlignment: Text.AlignHCenter
-          text: root.reading ? root.reading.hexagram.meaning : ""
+          // One sentence per line.
+          text: root.reading ? root.reading.hexagram.meaning.replace(/([.!?])\s+/g, "$1\n") : ""
           color: root.bar.foreground
           opacity: 0.85
           font.family: root.bar.fontFamily
