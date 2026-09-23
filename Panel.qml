@@ -156,6 +156,8 @@ Panel {
           spacing: Style.space(4)
 
           PanelSectionHeader {
+            width: parent.width
+            horizontalAlignment: Text.AlignHCenter
             text: "SEED · " + (root.reading ? root.reading.date : "")
             foreground: root.bar.foreground
             fontFamily: root.bar.fontFamily
