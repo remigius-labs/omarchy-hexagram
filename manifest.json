@@ -1,0 +1,21 @@
+{
+  "schemaVersion": 1,
+  "id": "remi.hexagram",
+  "name": "Daily Hexagram",
+  "version": "0.1.0",
+  "author": "remigius-labs",
+  "description": "One I Ching hexagram in your bar, cast once a day from 32 bytes of your machine's own /dev/urandom",
+  "kinds": [
+    "bar-widget"
+  ],
+  "entryPoints": {
+    "barWidget": "Panel.qml"
+  },
+  "barWidget": {
+    "displayName": "Daily Hexagram",
+    "description": "Today's hexagram, cast from your machine's randomness. Click for the lines and the seed.",
+    "category": "Fun",
+    "defaultSection": "right",
+    "allowMultiple": false
+  }
+}
