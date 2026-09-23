@@ -11,8 +11,11 @@ Panel {
   id: root
   moduleName: "remi.hexagram"
   ipcTarget: "remi.hexagram"
+  // Own the IpcHandler so toggleSeed can be exposed alongside open/close.
+  manageIpc: false
 
   property var reading: null
+  property bool showSeed: false
   readonly property string glyph: reading ? reading.hexagram.glyph : "䷀"
   readonly property string title: reading
     ? reading.hexagram.number + " · " + reading.hexagram.name
@@ -28,7 +31,17 @@ Panel {
     if (next) reading = next
   }
 
+  IpcHandler {
+    target: "remi.hexagram"
+
+    function open() { root.open() }
+    function close() { root.close() }
+    function toggle() { root.toggle() }
+    function toggleSeed() { root.showSeed = !root.showSeed }
+  }
+
   Component.onCompleted: refresh()
+  onOpenedChanged: if (opened) showSeed = false
 
   Process {
     id: castProc
@@ -72,31 +85,57 @@ Panel {
         anchors.top: parent.top
         spacing: Style.space(12)
 
-        // ---------- Name · number/pinyin ----------
-        Column {
+        // ---------- Name · number/pinyin, with a "?" in the corner ----------
+        Item {
           width: parent.width
-          spacing: Style.space(2)
+          implicitHeight: titleBlock.implicitHeight
+
+          Column {
+            id: titleBlock
+            width: parent.width
+            spacing: Style.space(2)
+
+            Text {
+              width: parent.width
+              horizontalAlignment: Text.AlignHCenter
+              text: root.reading ? root.reading.hexagram.name : "Casting…"
+              color: root.bar.foreground
+              font.family: root.bar.fontFamily
+              font.pixelSize: Style.font.title
+              font.bold: true
+            }
+            Text {
+              width: parent.width
+              horizontalAlignment: Text.AlignHCenter
+              text: root.reading
+                ? (root.reading.hexagram.number + " · " + root.reading.hexagram.pinyin).toUpperCase()
+                : ""
+              color: Qt.darker(root.bar.foreground, 1.4)
+              font.family: root.bar.fontFamily
+              font.pixelSize: Style.font.caption
+              font.bold: true
+              font.letterSpacing: 1.2
+            }
+          }
 
           Text {
-            width: parent.width
-            horizontalAlignment: Text.AlignHCenter
-            text: root.reading ? root.reading.hexagram.name : "Casting…"
+            anchors.right: parent.right
+            anchors.top: parent.top
+            text: "?"
             color: root.bar.foreground
+            opacity: root.showSeed || seedHelp.containsMouse ? 0.9 : 0.4
             font.family: root.bar.fontFamily
             font.pixelSize: Style.font.title
             font.bold: true
-          }
-          Text {
-            width: parent.width
-            horizontalAlignment: Text.AlignHCenter
-            text: root.reading
-              ? (root.reading.hexagram.number + " · " + root.reading.hexagram.pinyin).toUpperCase()
-              : ""
-            color: Qt.darker(root.bar.foreground, 1.4)
-            font.family: root.bar.fontFamily
-            font.pixelSize: Style.font.caption
-            font.bold: true
-            font.letterSpacing: 1.2
+
+            MouseArea {
+              id: seedHelp
+              anchors.fill: parent
+              anchors.margins: -Style.space(6)
+              hoverEnabled: true
+              cursorShape: Qt.PointingHandCursor
+              onClicked: root.showSeed = !root.showSeed
+            }
           }
         }
 
@@ -149,38 +188,43 @@ Panel {
           lineHeight: 1.25
         }
 
-        PanelSeparator { foreground: root.bar.foreground }
-
-        // ---------- Seed receipt ----------
+        // ---------- How it is cast, folded behind the "?" ----------
         Column {
+          visible: root.showSeed
           width: parent.width
-          spacing: Style.space(4)
+          spacing: Style.space(10)
 
-          PanelSectionHeader {
-            width: parent.width
-            horizontalAlignment: Text.AlignHCenter
-            text: "SEED · " + (root.reading ? root.reading.date : "")
-            foreground: root.bar.foreground
-            fontFamily: root.bar.fontFamily
-          }
+          PanelSeparator { foreground: root.bar.foreground }
+
           Text {
             width: parent.width
             horizontalAlignment: Text.AlignHCenter
-            text: root.reading ? root.reading.seed : ""
+            text: "Once a day your machine draws 32 random bytes.\nThat is the seed. The seed picks the hexagram.\nIt only changes when the date does."
             color: root.bar.foreground
-            opacity: 0.6
+            opacity: 0.7
             font.family: root.bar.fontFamily
             font.pixelSize: Style.font.caption
-            wrapMode: Text.WrapAnywhere
+            wrapMode: Text.WordWrap
+            lineHeight: 1.25
           }
           Text {
             width: parent.width
             horizontalAlignment: Text.AlignHCenter
             text: "od -An -tx1 -N32 /dev/urandom"
             color: root.bar.foreground
-            opacity: 0.35
+            opacity: 0.45
             font.family: root.bar.fontFamily
             font.pixelSize: Style.font.caption
+          }
+          Text {
+            width: parent.width
+            horizontalAlignment: Text.AlignHCenter
+            text: root.reading ? root.reading.seed : ""
+            color: root.bar.foreground
+            opacity: 0.45
+            font.family: root.bar.fontFamily
+            font.pixelSize: Style.font.caption
+            wrapMode: Text.WrapAnywhere
           }
         }
       }
