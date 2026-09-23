@@ -13,9 +13,9 @@ Panel {
   ipcTarget: "remi.hexagram"
 
   property var reading: null
-  readonly property string glyph: reading ? reading.primary.glyph : "䷀"
+  readonly property string glyph: reading ? reading.hexagram.glyph : "䷀"
   readonly property string title: reading
-    ? reading.primary.number + " · " + reading.primary.name
+    ? reading.hexagram.number + " · " + reading.hexagram.name
     : "Casting…"
 
   implicitWidth: button.implicitWidth
@@ -72,40 +72,28 @@ Panel {
         anchors.top: parent.top
         spacing: Style.space(12)
 
-        // ---------- Hero: glyph · number/name · pinyin ----------
-        Row {
+        // ---------- Name · number/pinyin/trigrams ----------
+        Column {
           width: parent.width
-          spacing: Style.space(14)
+          spacing: Style.space(2)
 
           Text {
-            text: root.glyph
+            text: root.reading ? root.reading.hexagram.name : "Casting…"
             color: root.bar.foreground
-            font.pixelSize: Style.font.displayLarge * 1.4
-            anchors.verticalCenter: parent.verticalCenter
+            font.family: root.bar.fontFamily
+            font.pixelSize: Style.font.title
+            font.bold: true
           }
-
-          Column {
-            anchors.verticalCenter: parent.verticalCenter
-            spacing: Style.space(2)
-
-            Text {
-              text: root.reading ? root.reading.primary.name : "Casting…"
-              color: root.bar.foreground
-              font.family: root.bar.fontFamily
-              font.pixelSize: Style.font.title
-              font.bold: true
-            }
-            Text {
-              text: root.reading
-                ? (root.reading.primary.number + " · " + root.reading.primary.pinyin + " · "
-                   + root.reading.primary.upper + " over " + root.reading.primary.lower).toUpperCase()
-                : ""
-              color: Qt.darker(root.bar.foreground, 1.4)
-              font.family: root.bar.fontFamily
-              font.pixelSize: Style.font.caption
-              font.bold: true
-              font.letterSpacing: 1.2
-            }
+          Text {
+            text: root.reading
+              ? (root.reading.hexagram.number + " · " + root.reading.hexagram.pinyin + " · "
+                 + root.reading.hexagram.upper + " over " + root.reading.hexagram.lower).toUpperCase()
+              : ""
+            color: Qt.darker(root.bar.foreground, 1.4)
+            font.family: root.bar.fontFamily
+            font.pixelSize: Style.font.caption
+            font.bold: true
+            font.letterSpacing: 1.2
           }
         }
 
@@ -118,12 +106,9 @@ Panel {
             Item {
               id: lineRow
               required property int modelData
-              readonly property int value: root.reading.lines[modelData]
-              readonly property bool yang: value === 7 || value === 9
-              readonly property bool changing: value === 6 || value === 9
+              readonly property bool yang: root.reading.lines[modelData]
               width: parent.width
               height: Style.space(10)
-              opacity: changing ? 1 : 0.55
 
               // Yang: one bar. Yin: two bars with a gap of one sixth.
               Rectangle {
@@ -143,49 +128,20 @@ Panel {
                 radius: height / 3
                 color: root.bar.foreground
               }
-              // Changing marker, the classic circle in the middle of the line.
-              Rectangle {
-                visible: lineRow.changing
-                anchors.centerIn: parent
-                width: parent.height * 1.6
-                height: width
-                radius: width / 2
-                color: Color.popups.background
-                border.width: 2
-                border.color: root.bar.foreground
-              }
             }
           }
         }
 
-        // ---------- Becomes ----------
-        Row {
-          visible: !!(root.reading && root.reading.future)
+        // ---------- What it means ----------
+        Text {
           width: parent.width
-          spacing: Style.space(10)
-
-          Text {
-            text: "becomes"
-            color: root.bar.foreground
-            opacity: 0.6
-            font.family: root.bar.fontFamily
-            font.pixelSize: Style.font.bodySmall
-            anchors.verticalCenter: parent.verticalCenter
-          }
-          Text {
-            text: root.reading && root.reading.future ? root.reading.future.glyph : ""
-            color: root.bar.foreground
-            font.pixelSize: Style.font.title
-            anchors.verticalCenter: parent.verticalCenter
-          }
-          Text {
-            text: root.reading && root.reading.future
-              ? root.reading.future.number + " · " + root.reading.future.name : ""
-            color: root.bar.foreground
-            font.family: root.bar.fontFamily
-            font.pixelSize: Style.font.bodySmall
-            anchors.verticalCenter: parent.verticalCenter
-          }
+          text: root.reading ? root.reading.hexagram.meaning : ""
+          color: root.bar.foreground
+          opacity: 0.85
+          font.family: root.bar.fontFamily
+          font.pixelSize: Style.font.bodySmall
+          wrapMode: Text.WordWrap
+          lineHeight: 1.25
         }
 
         PanelSeparator { foreground: root.bar.foreground }
