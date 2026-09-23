@@ -41,6 +41,17 @@ Then enable it from the bar settings, or:
 omarchy plugin enable remi.hexagram --section right
 ```
 
+## Remove
+
+```
+omarchy plugin disable remi.hexagram
+omarchy plugin remove remi.hexagram
+rm -rf ~/.cache/daily-hexagram
+```
+
+The plugin writes exactly one file outside its own folder: the day's seed in
+`~/.cache/daily-hexagram/seed`. It never touches your config.
+
 ## Limits
 
 Needs a font with the Yijing Hexagram Symbols block; Noto Sans Symbols 2 or
