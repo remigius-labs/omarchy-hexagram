@@ -2,6 +2,8 @@
 
 One I Ching hexagram sits in your Omarchy bar. It changes once a day.
 
+![Daily Hexagram popup](preview.png)
+
 Your machine throws the coins:
 
 ```
@@ -16,7 +18,10 @@ One seed, one hexagram. No changing lines, no "becomes". The day gives you one
 answer.
 
 The bar shows it as its Unicode glyph (U+4DC0 to U+4DFF). Click it for the
-name, the six lines, a short plain-English explainer, and the seed itself.
+name, the six lines and a short plain-English explainer. The `?` in the corner
+folds out how it was cast, with the seed itself.
+
+![Cast explanation folded out](preview-seed.png)
 
 The explainers are original short paraphrases written for this plugin, MIT
 like the rest. Wilhelm's English is still under copyright and Legge's 1882
@@ -29,5 +34,19 @@ but for the I Ching.
 ```
 omarchy plugin add https://github.com/remigius-labs/omarchy-hexagram
 ```
+
+Then enable it from the bar settings, or:
+
+```
+omarchy plugin enable remi.hexagram --section right
+```
+
+## Limits
+
+Needs a font with the Yijing Hexagram Symbols block; Noto Sans Symbols 2 or
+DejaVu cover it and Omarchy ships both. The explainers are two lines each, on
+purpose. No line texts, no changing lines, no question asked.
+
+## License
 
 MIT.
